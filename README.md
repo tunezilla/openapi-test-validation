@@ -7,7 +7,7 @@ This package does not currently have a Laravel version restriction. It is tested
 
 ## Installation
 
-`composer require tunezilla/openapi-test-validation`
+`composer require --dev tunezilla/openapi-test-validation`
 
 ## Usage
 
