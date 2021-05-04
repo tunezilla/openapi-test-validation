@@ -1,0 +1,41 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: TuneZilla OpenAPI Test Schema
+servers:
+  - url: /api
+    description: Local
+paths:
+  /foo:
+    get:
+      summary: Show foo stuff
+      operationId: showFooStuff
+      parameters:
+        - in: query
+          name: bad_code
+          schema:
+            type: boolean
+          description: If true, will return invalid response code
+        - in: query
+          name: bad_enum
+          schema:
+            type: boolean
+          description: If true, will return invalid value for foo enum
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foo'
+components:
+  schemas:
+    Foo:
+      type: object
+      required:
+        - foo
+      properties:
+        foo:
+          type: string
+          enum:
+            - bar

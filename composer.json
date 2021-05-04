@@ -1,0 +1,41 @@
+{
+  "name": "tunezilla/openapi-test-validation",
+  "description": "Easy OpenAPI Validation for Laravel tests",
+  "keywords": [
+    "laravel",
+    "openapi"
+  ],
+  "license": "MIT",
+  "require": {
+    "php": ">=7.4",
+    "league/openapi-psr7-validator": "^0.16.0",
+    "nyholm/psr7": "^1.3",
+    "symfony/psr-http-message-bridge": "^2.0"
+  },
+  "require-dev": {
+    "orchestra/testbench": "^6.17",
+    "phpunit/phpunit": "^9.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "TuneZilla\\OpenAPITestValidation\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "TuneZilla\\OpenAPITestValidation\\Test\\": "tests/"
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "scripts": {
+    "test": [
+      "Composer\\Config::disableProcessTimeout",
+      "composer install --no-interaction --no-ansi",
+      "./vendor/bin/phpunit -c phpunit.xml"
+    ]
+  }
+}
