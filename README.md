@@ -97,3 +97,29 @@ class ExampleTest extends TestCase
     }
 }
 ```
+
+### Sending Invalid Request
+
+```php
+<?php
+
+namespace Tests\Feature;
+
+use TuneZilla\OpenAPITestValidation\MakesOpenAPIRequests;
+use Tests\TestCase;
+
+class ExampleTest extends TestCase
+{
+    use MakesOpenAPIRequests;
+
+    public function testInvalidRequest()
+    {
+        // you can use `ignoreNextOpenAPIRequest` to allow invalid requests to pass through to your backend.
+        // this is useful if you're making sure 422 validation errors are thrown:
+        $this->openAPI(resource_path('openapi.yaml'))
+            ->ignoreNextOpenAPIRequest()
+            ->json('GET', '/api/settings?invalid-param=12345')
+            ->assertJsonValidationError(['invalid-param']);
+    }
+}
+```

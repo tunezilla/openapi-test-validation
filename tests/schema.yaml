@@ -21,6 +21,12 @@ paths:
           schema:
             type: boolean
           description: If true, will return invalid value for foo enum
+        - in: query
+          name: nothing
+          schema:
+            type: string
+            enum: [abc, def]
+          description: Ignored by the server, but you can test request validation with this.
       responses:
         '200':
           description: OK

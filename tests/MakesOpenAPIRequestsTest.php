@@ -54,7 +54,19 @@ class MakesOpenAPIRequestsTest extends TestCase
     {
         $this->expectException(OpenAPIRequestException::class);
         $this->openAPI(__DIR__ . '/schema.yaml')
-            ->json('GET', '/api/foo?bad_enum=281-330-8004');
+            ->json('GET', '/api/foo?nothing=281-330-8004');
+    }
+
+    public function testMakeRequestWithInvalidParametersButItsIgnored()
+    {
+        $this->openAPI(__DIR__ . '/schema.yaml')
+            ->ignoreNextOpenAPIRequest()
+            ->json('GET', '/api/foo?nothing=281-330-8004')
+            ->assertSuccessful();
+
+        $this->expectException(OpenAPIRequestException::class);
+        $this->openAPI(__DIR__ . '/schema.yaml')
+            ->json('GET', '/api/foo?nothing=281-330-8004');
     }
 
     public function testMakeRequestWithInvalidResponseEnum()

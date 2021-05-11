@@ -3,6 +3,7 @@
 namespace TuneZilla\OpenAPITestValidation;
 
 use League\OpenAPIValidation\PSR7\Exception\Validation\InvalidBody;
+use League\OpenAPIValidation\PSR7\OperationAddress;
 use League\OpenAPIValidation\PSR7\ValidatorBuilder;
 use League\OpenAPIValidation\Schema\Exception\SchemaMismatch;
 use Nyholm\Psr7\Factory\Psr17Factory;
@@ -13,6 +14,7 @@ trait MakesOpenAPIRequests
 {
     private ?string $openApiLastPath = null;
     private ?ValidatorBuilder $openApiValidator = null;
+    private bool $ignoreValidationForNextRequest = false;
 
     private function openAPI(string $path)
     {
@@ -29,6 +31,12 @@ trait MakesOpenAPIRequests
                 );
             }
         }
+        return $this;
+    }
+
+    private function ignoreNextOpenAPIRequest()
+    {
+        $this->ignoreValidationForNextRequest = true;
         return $this;
     }
 
@@ -57,16 +65,21 @@ trait MakesOpenAPIRequests
 
         $operationAddress = null;
 
-        try {
-            $operationAddress = $this->openApiValidator
-                ->getRequestValidator()
-                ->validate($request);
-        } catch (\Throwable $ex) {
-            throw new OpenAPIRequestException(
-                "Validation failed for OpenAPI request: {$ex->getMessage()}",
-                $ex->getCode(),
-                $ex
-            );
+        if ($this->ignoreValidationForNextRequest) {
+            $this->ignoreValidationForNextRequest = false;
+            $operationAddress = new OperationAddress($request->getUri()->getPath(), strtolower($request->getMethod()));
+        } else {
+            try {
+                $operationAddress = $this->openApiValidator
+                    ->getRequestValidator()
+                    ->validate($request);
+            } catch (\Throwable $ex) {
+                throw new OpenAPIRequestException(
+                    "Validation failed for OpenAPI request: {$ex->getMessage()}",
+                    $ex->getCode(),
+                    $ex
+                );
+            }
         }
 
         $response = parent::call(
